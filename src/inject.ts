@@ -15,21 +15,25 @@ import { getLinksFromDom } from './utils/getLinksFromDom';
  */
 
 let githubToken: string = '';
+let glocMode: boolean = false;
 
 /**
  * Main
  */
 (() => {
-	chrome.storage.sync.get({ 'x-github-token': '' }, result => {
+	chrome.storage.sync.get(['x-github-token', 'glocMode'], result => {
+		console.log('chrome.storage.sync.get', result);
 		if (result && result['x-github-token'] !== null) {
 			githubToken = result['x-github-token'];
 		}
 
-		gloc();
-
-		document.addEventListener('pjax:complete', () => {
+		if (result['glocMode']) {
 			gloc();
-		})
+	
+			document.addEventListener('pjax:complete', () => {
+				gloc();
+			})
+		}
 	});
 })();
 

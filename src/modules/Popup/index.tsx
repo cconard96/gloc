@@ -9,7 +9,7 @@ export default class PopupPage extends React.PureComponent {
 		return (
 			<React.Fragment>
 				<Header />
-				{/* <Body /> */}
+				<Body />
 				<Footer />
 			</React.Fragment>
 		);

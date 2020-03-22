@@ -1,5 +1,4 @@
 import * as React from 'react';
-import styled from 'styled-components';
 
 import {
     Container,
@@ -7,38 +6,39 @@ import {
     Column,
 } from '../../../Common/components/Layout/index';
 import { Text } from '../../../Common/components/Text/index';
-import { TextList, Type } from '../../../Common/components/TextList/index';
+
 import { colors } from '../../../../theme/colors';
 
-const Wrapper = styled(Container)`
-    background-color: black;
-`;
+export default class Body extends React.PureComponent<any, { checked: boolean }> {
+    constructor(props: any) {
+        super(props);
 
-export default class Body extends React.PureComponent {
+        this.state = { checked: false };
+    }
+
+    handleChange = () => {
+        this.setState({ checked: !this.state.checked }, () => {
+            chrome.storage.sync.set({ glocMode: !this.state.checked }, function() {
+                console.log('Value is set to something');
+            });
+
+            chrome.storage.sync.get(['x-github-token', 'glocMode'], result => {
+                console.log('chrome.storage.sync.get', result);
+            });
+        });
+    }
+
 	render() {
-        const headerMsg = chrome.i18n.getMessage('indexCountsFrom');
-        const list = [
-            chrome.i18n.getMessage('indexProjectPage'),
-            chrome.i18n.getMessage('indexUserPage'),
-            chrome.i18n.getMessage('indexSearchPage'),
-            chrome.i18n.getMessage('indexTrandingPage'),
-            chrome.i18n.getMessage('indexEtc'),
-        ];
-
 		return (
             <Container color={colors.grey200}>
-                <Column>
-                    <Row>
-                        <Text>{headerMsg}</Text>
-                    </Row>
-
-                    <Row>
-                        <TextList
-                            type={Type.Ol}
-                            list={list}
-                        />
-                    </Row>
-                </Column>
+                <Row>
+                    <Column>
+                        <Text>On/Off Gloc</Text>
+                    </Column>
+                    <Column>
+                        <input type={'checkbox'} onChange={this.handleChange} checked={this.state.checked} />
+                    </Column>
+                </Row>
             </Container>
 		);
 	}
